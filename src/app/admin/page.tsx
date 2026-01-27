@@ -1,18 +1,15 @@
 "use client";
 
 import { UserButton, useUser } from "@clerk/nextjs";
-import { BarChart3, Box, FileText, LayoutDashboard, Settings, Shield, Users, Plus, Trash2, CheckCircle, XCircle } from "lucide-react";
+import { BarChart3, Box, FileText, LayoutDashboard, Settings, Shield, Users, Plus, Trash2, CheckCircle, XCircle, Mail, MessageSquare } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 
 export default function AdminDashboard() {
     const { user, isLoaded } = useUser();
     const [activeTab, setActiveTab] = useState("overview");
-    const [stats, setStats] = useState({ projects: 0, skills: 0, certs: 0 });
 
     // Verify Admin Email Clientside (Backend does the real check)
-    // Using a more robust check that handles potential case differences
     const isAdmin = user?.emailAddresses.some(e => e.emailAddress.toLowerCase().trim() === "mohammadsarfraj2001@gmail.com");
 
     if (!isLoaded) return <div className="min-h-screen flex items-center justify-center bg-background text-foreground">Loading Security Protocols...</div>;
@@ -29,7 +26,7 @@ export default function AdminDashboard() {
     }
 
     return (
-        <div className="min-h-screen bg-background flex">
+        <div className="min-h-screen bg-background flex text-foreground">
             {/* Sidebar */}
             <aside className="w-64 border-r border-border bg-card hidden md:flex flex-col">
                 <div className="p-6 border-b border-border flex items-center gap-2">
@@ -39,6 +36,7 @@ export default function AdminDashboard() {
 
                 <nav className="flex-1 p-4 space-y-2">
                     <NavItem icon={<LayoutDashboard size={20} />} label="Overview" active={activeTab === 'overview'} onClick={() => setActiveTab('overview')} />
+                    <NavItem icon={<Mail size={20} />} label="Messages" active={activeTab === 'messages'} onClick={() => setActiveTab('messages')} />
                     <NavItem icon={<Box size={20} />} label="Projects" active={activeTab === 'projects'} onClick={() => setActiveTab('projects')} />
                     <NavItem icon={<BarChart3 size={20} />} label="Skills" active={activeTab === 'skills'} onClick={() => setActiveTab('skills')} />
                     <NavItem icon={<FileText size={20} />} label="Certificates" active={activeTab === 'certs'} onClick={() => setActiveTab('certs')} />
@@ -57,7 +55,7 @@ export default function AdminDashboard() {
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 p-8 overflow-y-auto">
+            <main className="flex-1 p-8 overflow-y-auto h-screen">
                 <header className="flex justify-between items-center mb-8">
                     <div>
                         <h1 className="text-3xl font-bold text-foreground capitalize">{activeTab}</h1>
@@ -75,6 +73,7 @@ export default function AdminDashboard() {
                 </header>
 
                 {activeTab === 'overview' && <OverviewTab />}
+                {activeTab === 'messages' && <MessagesManager />}
                 {activeTab === 'projects' && <ProjectsManager />}
                 {activeTab === 'skills' && <SkillsManager />}
                 {activeTab === 'certs' && <CertificatesManager />}
@@ -93,99 +92,121 @@ function NavItem({ icon, label, active = false, onClick }: { icon: React.ReactNo
     );
 }
 
-// Sub-components for Tabs
+// Sub-components
 function OverviewTab() {
     return (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-card border border-border rounded-xl p-6">
-                <h3 className="text-muted-foreground mb-2">Total Statistics</h3>
-                <p className="text-sm text-muted-foreground">Stats will populate live from DB.</p>
+        <div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
+                    <h3 className="text-muted-foreground mb-2">System Status</h3>
+                    <p className="text-2xl font-bold text-green-500">Online</p>
+                </div>
             </div>
+            <p className="text-muted-foreground">Select a module from the sidebar to manage content.</p>
         </div>
     )
 }
 
-interface Project { _id: string; title: string; techStack: string[]; description: string; }
-interface Skill { _id: string; name: string; level: number; category: string; }
-interface Experience { _id: string; role: string; company: string; period: string; description: string; }
-interface Certificate { _id: string; title: string; organization: string; year: number; certificateUrl: string; }
+// --- Interfaces ---
+interface Message { _id: string; name: string; email: string; subject: string; message: string; createdAt: string; isRead: boolean; }
+interface Project { _id: string; title: string; techStack: string[]; description: string; githubLink?: string; liveLink?: string; }
+interface Skill { _id: string; skillName: string; proficiencyLevel: string; category: string; }
+interface Experience { _id: string; role: string; companyName: string; duration: string; description: string[]; }
+interface Certificate { _id: string; title: string; issuer: string; date: string; credentialUrl: string; }
 
-function ProjectsManager() {
-    const [projects, setProjects] = useState<Project[]>([]);
-    const [loading, setLoading] = useState(false);
-    const [showForm, setShowForm] = useState(false);
-    const [newProject, setNewProject] = useState({ title: "", description: "", techStack: "", githubUrl: "", liveUrl: "" });
+// --- Managers ---
 
-    const fetchProjects = async () => {
-        const res = await fetch("/api/admin/projects");
-        if (res.ok) setProjects(await res.json());
+function MessagesManager() {
+    const [messages, setMessages] = useState<Message[]>([]);
+
+    const fetchMessages = async () => {
+        const res = await fetch("/api/admin/messages");
+        if (res.ok) setMessages(await res.json());
     };
 
-    useEffect(() => { fetchProjects(); }, []);
+    useEffect(() => { fetchMessages(); }, []);
 
     const handleDelete = async (id: string) => {
-        if (!confirm("Delete this project?")) return;
-        setLoading(true);
-        await fetch(`/api/admin/projects?id=${id}`, { method: "DELETE" });
-        await fetchProjects();
-        setLoading(false);
+        if (!confirm("Delete message?")) return;
+        await fetch(`/api/admin/messages?id=${id}`, { method: "DELETE" });
+        fetchMessages();
     };
 
-    const handleAdd = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setLoading(true);
-        await fetch("/api/admin/projects", {
-            method: "POST",
-            body: JSON.stringify({ ...newProject, techStack: newProject.techStack.split(",").map(t => t.trim()) })
+    const toggleRead = async (id: string, currentStatus: boolean) => {
+        await fetch("/api/admin/messages", {
+            method: "PATCH",
+            body: JSON.stringify({ id, isRead: !currentStatus })
         });
-        await fetchProjects();
-        setShowForm(false);
-        setNewProject({ title: "", description: "", techStack: "", githubUrl: "", liveUrl: "" });
-        setLoading(false);
+        fetchMessages();
     }
 
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <h2 className="text-xl font-bold">Manage Projects</h2>
-                <button onClick={() => setShowForm(!showForm)} className="btn-primary flex items-center gap-2 text-sm py-2"><Plus size={16} /> Add Project</button>
-            </div>
-
-            {showForm && (
-                <form onSubmit={handleAdd} className="bg-card p-6 rounded-xl border border-border space-y-4">
-                    <input className="w-full p-2 bg-background border border-border rounded" placeholder="Project Title" value={newProject.title} onChange={e => setNewProject({ ...newProject, title: e.target.value })} required />
-                    <textarea className="w-full p-2 bg-background border border-border rounded" placeholder="Description" value={newProject.description} onChange={e => setNewProject({ ...newProject, description: e.target.value })} required />
-                    <input className="w-full p-2 bg-background border border-border rounded" placeholder="Tech Stack (comma separated)" value={newProject.techStack} onChange={e => setNewProject({ ...newProject, techStack: e.target.value })} required />
-                    <div className="flex gap-2">
-                        <input className="w-1/2 p-2 bg-background border border-border rounded" placeholder="GitHub URL" value={newProject.githubUrl} onChange={e => setNewProject({ ...newProject, githubUrl: e.target.value })} />
-                        <input className="w-1/2 p-2 bg-background border border-border rounded" placeholder="Live URL" value={newProject.liveUrl} onChange={e => setNewProject({ ...newProject, liveUrl: e.target.value })} />
+        <div className="space-y-4">
+            {messages.map((msg) => (
+                <div key={msg._id} className={`p-4 border rounded-xl flex justify-between items-start gap-4 transition-colors ${msg.isRead ? 'bg-card border-border opacity-75' : 'bg-secondary/5 border-primary/20'}`}>
+                    <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                            <h4 className="font-bold text-foreground">{msg.name}</h4>
+                            <span className="text-xs text-muted-foreground">({msg.email})</span>
+                            {!msg.isRead && <span className="text-[10px] bg-primary text-primary-foreground px-2 py-0.5 rounded-full">NEW</span>}
+                        </div>
+                        <p className="text-sm font-medium text-foreground/80 mb-2">{msg.subject}</p>
+                        <p className="text-sm text-muted-foreground whitespace-pre-wrap">{msg.message}</p>
+                        <p className="text-xs text-muted-foreground mt-4">{new Date(msg.createdAt).toLocaleString()}</p>
                     </div>
-                    <button disabled={loading} className="btn-primary w-full">{loading ? "Saving..." : "Save Project"}</button>
+                    <div className="flex flex-col gap-2">
+                        <button onClick={() => toggleRead(msg._id, msg.isRead)} className="p-2 hover:bg-secondary/10 rounded text-primary" title={msg.isRead ? "Mark Unread" : "Mark Read"}>
+                            {msg.isRead ? <CheckCircle size={18} /> : <MessageSquare size={18} />}
+                        </button>
+                        <button onClick={() => handleDelete(msg._id)} className="p-2 hover:bg-destructive/10 rounded text-destructive" title="Delete">
+                            <Trash2 size={18} />
+                        </button>
+                    </div>
+                </div>
+            ))}
+            {messages.length === 0 && <div className="text-center p-8 text-muted-foreground">No messages found.</div>}
+        </div>
+    )
+}
+
+function ProjectsManager() {
+    const [projects, setProjects] = useState<Project[]>([]);
+    const [showForm, setShowForm] = useState(false);
+    const [newItem, setNewItem] = useState<any>({});
+
+    const fetchData = async () => { const res = await fetch("/api/admin/projects"); if (res.ok) setProjects(await res.json()); };
+    useEffect(() => { fetchData(); }, []);
+
+    const handleDelete = async (id: string) => { if (confirm("Delete?")) { await fetch(`/api/admin/projects?id=${id}`, { method: "DELETE" }); fetchData(); } };
+    const handleSave = async (e: React.FormEvent) => {
+        e.preventDefault();
+        await fetch("/api/admin/projects", { method: "POST", body: JSON.stringify({ ...newItem, techStack: newItem.techStack?.split(",") || [] }) });
+        setShowForm(false); fetchData(); setNewItem({});
+    };
+
+    return (
+        <div className="space-y-6">
+            <div className="flex justify-between">
+                <h2 className="text-xl font-bold">Projects</h2>
+                <button onClick={() => setShowForm(!showForm)} className="btn-primary flex gap-2 text-sm py-2 px-4 items-center"><Plus size={16} /> Add New</button>
+            </div>
+            {showForm && (
+                <form onSubmit={handleSave} className="space-y-4 bg-card p-6 rounded-xl border border-border">
+                    <input className="input-field w-full p-2 bg-background border rounded" placeholder="Title" onChange={e => setNewItem({ ...newItem, title: e.target.value })} required />
+                    <textarea className="input-field w-full p-2 bg-background border rounded" placeholder="Description" onChange={e => setNewItem({ ...newItem, description: e.target.value })} required />
+                    <input className="input-field w-full p-2 bg-background border rounded" placeholder="Tech Stack (comma separated)" onChange={e => setNewItem({ ...newItem, techStack: e.target.value })} />
+                    <input className="input-field w-full p-2 bg-background border rounded" placeholder="GitHub Link" onChange={e => setNewItem({ ...newItem, githubLink: e.target.value })} />
+                    <input className="input-field w-full p-2 bg-background border rounded" placeholder="Live Link" onChange={e => setNewItem({ ...newItem, liveLink: e.target.value })} />
+                    <button className="btn-primary w-full py-2">Save</button>
                 </form>
             )}
-
-            <div className="bg-card border border-border rounded-xl overflow-hidden">
-                <table className="w-full text-sm">
-                    <thead className="bg-secondary/20 text-left">
-                        <tr>
-                            <th className="p-4 font-medium text-muted-foreground">Name</th>
-                            <th className="p-4 font-medium text-muted-foreground">Tech Stack</th>
-                            <th className="p-4 font-medium text-muted-foreground right-0 text-right">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border">
-                        {projects.map((p) => (
-                            <tr key={p._id}>
-                                <td className="p-4 text-foreground font-medium">{p.title}</td>
-                                <td className="p-4 text-muted-foreground">{p.techStack?.join(", ")}</td>
-                                <td className="p-4 text-right">
-                                    <button onClick={() => handleDelete(p._id)} className="text-destructive hover:bg-destructive/10 p-2 rounded"><Trash2 size={16} /></button>
-                                </td>
-                            </tr>
-                        ))}
-                        {projects.length === 0 && <tr><td colSpan={3} className="p-8 text-center text-muted-foreground">No projects found in database.</td></tr>}
-                    </tbody>
-                </table>
+            <div className="grid gap-4">
+                {projects.map(p => (
+                    <div key={p._id} className="p-4 bg-card border border-border rounded flex justify-between">
+                        <div><h4 className="font-bold">{p.title}</h4><p className="text-sm text-muted-foreground">{p.description}</p></div>
+                        <button onClick={() => handleDelete(p._id)} className="text-destructive"><Trash2 size={18} /></button>
+                    </div>
+                ))}
             </div>
         </div>
     )
@@ -194,131 +215,40 @@ function ProjectsManager() {
 function SkillsManager() {
     const [skills, setSkills] = useState<Skill[]>([]);
     const [showForm, setShowForm] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [newSkill, setNewSkill] = useState({ name: "", level: 50, category: "Cyber Security Tools" });
+    const [newItem, setNewItem] = useState<any>({});
 
-    const fetchSkills = async () => {
-        const res = await fetch("/api/admin/skills");
-        if (res.ok) setSkills(await res.json());
-    };
+    const fetchData = async () => { const res = await fetch("/api/admin/skills"); if (res.ok) setSkills(await res.json()); };
+    useEffect(() => { fetchData(); }, []);
 
-    useEffect(() => { fetchSkills(); }, []);
-
-    const handleDelete = async (id: string) => {
-        if (!confirm("Delete skill?")) return;
-        await fetch(`/api/admin/skills?id=${id}`, { method: "DELETE" });
-        fetchSkills();
-    };
-
-    const handleAdd = async (e: React.FormEvent) => {
+    const handleDelete = async (id: string) => { if (confirm("Delete?")) { await fetch(`/api/admin/skills?id=${id}`, { method: "DELETE" }); fetchData(); } };
+    const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
-        setLoading(true);
-        await fetch("/api/admin/skills", { method: "POST", body: JSON.stringify(newSkill) });
-        await fetchSkills();
-        setShowForm(false);
-        setNewSkill({ name: "", level: 50, category: "Cyber Security Tools" });
-        setLoading(false);
-    }
+        await fetch("/api/admin/skills", { method: "POST", body: JSON.stringify(newItem) });
+        setShowForm(false); fetchData(); setNewItem({});
+    };
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <h2 className="text-xl font-bold">Manage Skills</h2>
-                <button onClick={() => setShowForm(!showForm)} className="btn-primary flex items-center gap-2 text-sm py-2"><Plus size={16} /> Add Skill</button>
+            <div className="flex justify-between">
+                <h2 className="text-xl font-bold">Skills</h2>
+                <button onClick={() => setShowForm(!showForm)} className="btn-primary flex gap-2 text-sm py-2 px-4 items-center"><Plus size={16} /> Add New</button>
             </div>
-
             {showForm && (
-                <form onSubmit={handleAdd} className="bg-card p-6 rounded-xl border border-border space-y-4">
-                    <input className="w-full p-2 bg-background border border-border rounded" placeholder="Skill Name" value={newSkill.name} onChange={e => setNewSkill({ ...newSkill, name: e.target.value })} required />
-                    <div className="flex gap-4 items-center">
-                        <label className="text-sm text-muted-foreground">Level (%):</label>
-                        <input type="number" min="0" max="100" className="p-2 bg-background border border-border rounded w-20" value={newSkill.level} onChange={e => setNewSkill({ ...newSkill, level: parseInt(e.target.value) })} required />
-                        <select className="p-2 bg-background border border-border rounded flex-grow" value={newSkill.category} onChange={e => setNewSkill({ ...newSkill, category: e.target.value })}>
-                            <option>Cyber Security Tools</option>
-                            <option>Programming & Scripting</option>
-                            <option>Cloud & DevOps</option>
-                        </select>
-                    </div>
-                    <button disabled={loading} className="btn-primary w-full">{loading ? "Saving..." : "Save Skill"}</button>
+                <form onSubmit={handleSave} className="space-y-4 bg-card p-6 rounded-xl border border-border">
+                    <input className="input-field w-full p-2 bg-background border rounded" placeholder="Skill Name" onChange={e => setNewItem({ ...newItem, skillName: e.target.value })} required />
+                    <input className="input-field w-full p-2 bg-background border rounded" placeholder="Category" onChange={e => setNewItem({ ...newItem, category: e.target.value })} required />
+                    <input className="input-field w-full p-2 bg-background border rounded" placeholder="Proficiency (e.g. Advanced)" onChange={e => setNewItem({ ...newItem, proficiencyLevel: e.target.value })} />
+                    <button className="btn-primary w-full py-2">Save</button>
                 </form>
             )}
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {skills.map((s) => (
+                {skills.map(s => (
                     <div key={s._id} className="p-4 bg-card border border-border rounded flex justify-between items-center">
-                        <div>
-                            <p className="font-bold text-foreground">{s.name}</p>
-                            <p className="text-xs text-muted-foreground">{s.category} • {s.level}%</p>
-                        </div>
-                        <button onClick={() => handleDelete(s._id)} className="text-destructive hover:bg-destructive/10 p-2 rounded"><Trash2 size={16} /></button>
+                        <div><h4 className="font-bold">{s.skillName}</h4><p className="text-xs text-muted-foreground">{s.category} • {s.proficiencyLevel}</p></div>
+                        <button onClick={() => handleDelete(s._id)} className="text-destructive"><Trash2 size={18} /></button>
                     </div>
                 ))}
             </div>
-            {skills.length === 0 && <div className="p-8 text-center text-muted-foreground border border-border rounded-xl">No skills found.</div>}
-        </div>
-    )
-}
-
-function ExperienceManager() {
-    const [experiences, setExperiences] = useState<Experience[]>([]);
-    const [showForm, setShowForm] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [newExp, setNewExp] = useState({ role: "", company: "", period: "", description: "" });
-
-    const fetchExp = async () => {
-        const res = await fetch("/api/admin/experience");
-        if (res.ok) setExperiences(await res.json());
-    };
-
-    useEffect(() => { fetchExp(); }, []);
-
-    const handleDelete = async (id: string) => {
-        if (!confirm("Delete experience?")) return;
-        await fetch(`/api/admin/experience?id=${id}`, { method: "DELETE" });
-        fetchExp();
-    };
-
-    const handleAdd = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setLoading(true);
-        await fetch("/api/admin/experience", { method: "POST", body: JSON.stringify(newExp) });
-        await fetchExp();
-        setShowForm(false);
-        setNewExp({ role: "", company: "", period: "", description: "" });
-        setLoading(false);
-    }
-
-    return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <h2 className="text-xl font-bold">Experience</h2>
-                <button onClick={() => setShowForm(!showForm)} className="btn-primary flex items-center gap-2 text-sm py-2"><Plus size={16} /> Add Experience</button>
-            </div>
-
-            {showForm && (
-                <form onSubmit={handleAdd} className="bg-card p-6 rounded-xl border border-border space-y-4">
-                    <input className="w-full p-2 bg-background border border-border rounded" placeholder="Role / Job Title" value={newExp.role} onChange={e => setNewExp({ ...newExp, role: e.target.value })} required />
-                    <input className="w-full p-2 bg-background border border-border rounded" placeholder="Company" value={newExp.company} onChange={e => setNewExp({ ...newExp, company: e.target.value })} required />
-                    <input className="w-full p-2 bg-background border border-border rounded" placeholder="Period (e.g. 2024 - Present)" value={newExp.period} onChange={e => setNewExp({ ...newExp, period: e.target.value })} required />
-                    <textarea className="w-full p-2 bg-background border border-border rounded h-32" placeholder="Description of responsibilities..." value={newExp.description} onChange={e => setNewExp({ ...newExp, description: e.target.value })} required />
-                    <button disabled={loading} className="btn-primary w-full">{loading ? "Saving..." : "Save Experience"}</button>
-                </form>
-            )}
-
-            <div className="space-y-4">
-                {experiences.map((exp) => (
-                    <div key={exp._id} className="p-4 bg-card border border-border rounded flex justify-between items-start">
-                        <div>
-                            <p className="font-bold text-lg text-foreground">{exp.role}</p>
-                            <p className="text-primary">{exp.company}</p>
-                            <p className="text-xs text-muted-foreground my-1">{exp.period}</p>
-                            <p className="text-sm text-foreground/80 line-clamp-2">{exp.description}</p>
-                        </div>
-                        <button onClick={() => handleDelete(exp._id)} className="text-destructive hover:bg-destructive/10 p-2 rounded"><Trash2 size={16} /></button>
-                    </div>
-                ))}
-            </div>
-            {experiences.length === 0 && <div className="p-8 text-center text-muted-foreground border border-border rounded-xl">No experience entries found.</div>}
         </div>
     )
 }
@@ -326,63 +256,82 @@ function ExperienceManager() {
 function CertificatesManager() {
     const [certs, setCerts] = useState<Certificate[]>([]);
     const [showForm, setShowForm] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [newCert, setNewCert] = useState({ title: "", organization: "", year: new Date().getFullYear(), certificateUrl: "" });
+    const [newItem, setNewItem] = useState<any>({});
 
-    const fetchCerts = async () => {
-        const res = await fetch("/api/admin/certificates");
-        if (res.ok) setCerts(await res.json());
-    };
+    const fetchData = async () => { const res = await fetch("/api/admin/certificates"); if (res.ok) setCerts(await res.json()); };
+    useEffect(() => { fetchData(); }, []);
 
-    useEffect(() => { fetchCerts(); }, []);
-
-    const handleDelete = async (id: string) => {
-        if (!confirm("Delete certificate?")) return;
-        await fetch(`/api/admin/certificates?id=${id}`, { method: "DELETE" });
-        fetchCerts();
-    };
-
-    const handleAdd = async (e: React.FormEvent) => {
+    const handleDelete = async (id: string) => { if (confirm("Delete?")) { await fetch(`/api/admin/certificates?id=${id}`, { method: "DELETE" }); fetchData(); } };
+    const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
-        setLoading(true);
-        await fetch("/api/admin/certificates", { method: "POST", body: JSON.stringify(newCert) });
-        await fetchCerts();
-        setShowForm(false);
-        setNewCert({ title: "", organization: "", year: new Date().getFullYear(), certificateUrl: "" });
-        setLoading(false);
-    }
+        await fetch("/api/admin/certificates", { method: "POST", body: JSON.stringify(newItem) });
+        setShowForm(false); fetchData(); setNewItem({});
+    };
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between">
                 <h2 className="text-xl font-bold">Certificates</h2>
-                <button onClick={() => setShowForm(!showForm)} className="btn-primary flex items-center gap-2 text-sm py-2"><Plus size={16} /> Add Certificate</button>
+                <button onClick={() => setShowForm(!showForm)} className="btn-primary flex gap-2 text-sm py-2 px-4 items-center"><Plus size={16} /> Add New</button>
             </div>
-
             {showForm && (
-                <form onSubmit={handleAdd} className="bg-card p-6 rounded-xl border border-border space-y-4">
-                    <input className="w-full p-2 bg-background border border-border rounded" placeholder="Certificate Title" value={newCert.title} onChange={e => setNewCert({ ...newCert, title: e.target.value })} required />
-                    <input className="w-full p-2 bg-background border border-border rounded" placeholder="Issuing Organization" value={newCert.organization} onChange={e => setNewCert({ ...newCert, organization: e.target.value })} required />
-                    <div className="flex gap-4">
-                        <input type="number" className="w-32 p-2 bg-background border border-border rounded" placeholder="Year" value={newCert.year} onChange={e => setNewCert({ ...newCert, year: parseInt(e.target.value) })} required />
-                        <input className="flex-grow p-2 bg-background border border-border rounded" placeholder="Certificate URL (Optional)" value={newCert.certificateUrl} onChange={e => setNewCert({ ...newCert, certificateUrl: e.target.value })} />
-                    </div>
-                    <button disabled={loading} className="btn-primary w-full">{loading ? "Saving..." : "Save Certificate"}</button>
+                <form onSubmit={handleSave} className="space-y-4 bg-card p-6 rounded-xl border border-border">
+                    <input className="input-field w-full p-2 bg-background border rounded" placeholder="Title" onChange={e => setNewItem({ ...newItem, title: e.target.value })} required />
+                    <input className="input-field w-full p-2 bg-background border rounded" placeholder="Issuer" onChange={e => setNewItem({ ...newItem, issuer: e.target.value })} required />
+                    <input className="input-field w-full p-2 bg-background border rounded" placeholder="Date/Year" onChange={e => setNewItem({ ...newItem, date: e.target.value })} required />
+                    <button className="btn-primary w-full py-2">Save</button>
                 </form>
             )}
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {certs.map((c) => (
+            <div className="grid gap-4">
+                {certs.map(c => (
                     <div key={c._id} className="p-4 bg-card border border-border rounded flex justify-between items-center">
-                        <div>
-                            <p className="font-bold text-foreground">{c.title}</p>
-                            <p className="text-xs text-muted-foreground">{c.organization} • {c.year}</p>
-                        </div>
-                        <button onClick={() => handleDelete(c._id)} className="text-destructive hover:bg-destructive/10 p-2 rounded"><Trash2 size={16} /></button>
+                        <div><h4 className="font-bold">{c.title}</h4><p className="text-xs text-muted-foreground">{c.issuer} • {c.date}</p></div>
+                        <button onClick={() => handleDelete(c._id)} className="text-destructive"><Trash2 size={18} /></button>
                     </div>
                 ))}
             </div>
-            {certs.length === 0 && <div className="p-8 text-center text-muted-foreground border border-border rounded-xl">No certificates found.</div>}
+        </div>
+    )
+}
+
+function ExperienceManager() {
+    const [exp, setExp] = useState<Experience[]>([]);
+    const [showForm, setShowForm] = useState(false);
+    const [newItem, setNewItem] = useState<any>({});
+
+    const fetchData = async () => { const res = await fetch("/api/admin/experience"); if (res.ok) setExp(await res.json()); };
+    useEffect(() => { fetchData(); }, []);
+
+    const handleDelete = async (id: string) => { if (confirm("Delete?")) { await fetch(`/api/admin/experience?id=${id}`, { method: "DELETE" }); fetchData(); } };
+    const handleSave = async (e: React.FormEvent) => {
+        e.preventDefault();
+        await fetch("/api/admin/experience", { method: "POST", body: JSON.stringify({ ...newItem, description: [newItem.description] }) });
+        setShowForm(false); fetchData(); setNewItem({});
+    };
+
+    return (
+        <div className="space-y-6">
+            <div className="flex justify-between">
+                <h2 className="text-xl font-bold">Experience</h2>
+                <button onClick={() => setShowForm(!showForm)} className="btn-primary flex gap-2 text-sm py-2 px-4 items-center"><Plus size={16} /> Add New</button>
+            </div>
+            {showForm && (
+                <form onSubmit={handleSave} className="space-y-4 bg-card p-6 rounded-xl border border-border">
+                    <input className="input-field w-full p-2 bg-background border rounded" placeholder="Company" onChange={e => setNewItem({ ...newItem, companyName: e.target.value })} required />
+                    <input className="input-field w-full p-2 bg-background border rounded" placeholder="Role" onChange={e => setNewItem({ ...newItem, role: e.target.value })} required />
+                    <input className="input-field w-full p-2 bg-background border rounded" placeholder="Duration" onChange={e => setNewItem({ ...newItem, duration: e.target.value })} required />
+                    <textarea className="input-field w-full p-2 bg-background border rounded" placeholder="Description" onChange={e => setNewItem({ ...newItem, description: e.target.value })} required />
+                    <button className="btn-primary w-full py-2">Save</button>
+                </form>
+            )}
+            <div className="grid gap-4">
+                {exp.map(x => (
+                    <div key={x._id} className="p-4 bg-card border border-border rounded flex justify-between items-start">
+                        <div><h4 className="font-bold">{x.role}</h4><p className="text-sm text-primary">{x.companyName}</p><p className="text-xs text-muted-foreground">{x.duration}</p></div>
+                        <button onClick={() => handleDelete(x._id)} className="text-destructive"><Trash2 size={18} /></button>
+                    </div>
+                ))}
+            </div>
         </div>
     )
 }
