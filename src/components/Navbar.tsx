@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { Shield, Menu, X, Lock, Linkedin, Send } from "lucide-react";
+import { Shield, Menu, X, Lock, Linkedin, Send, Github } from "lucide-react";
 
 const navItems = [
     { name: "Home", href: "#home" },
@@ -89,6 +89,15 @@ export default function Navbar() {
 
                         {/* Right Actions */}
                         <div className="flex items-center gap-3 z-50">
+                            <a
+                                href="https://github.com/Sarfraz-g19"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="p-2 rounded-full text-muted-foreground hover:text-white hover:bg-white/10 transition-all"
+                                title="GitHub"
+                            >
+                                <Github size={18} />
+                            </a>
                             <a
                                 href="https://www.linkedin.com/in/sarfrajshah-cybersecurity/"
                                 target="_blank"
