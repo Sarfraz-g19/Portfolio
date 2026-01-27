@@ -32,7 +32,7 @@ export default function HeroSection() {
                     name: "Sarfraj Shah",
                     title: "Full Stack Developer & Cyber Security Analyst",
                     subtitle: "Crafting secure, scalable digital experiences.",
-                    bio: "",
+                    bio: "With over 1 year of professional experience and 10+ successfully delivered projects, I bridge the gap between secure backend architecture and dynamic frontend experiences.",
                     avatar: "https://github.com/Sarfraz-g19.png",
                     availableForHire: true
                 });

@@ -52,13 +52,13 @@ export default function AboutSection() {
                         <div className="grid grid-cols-2 gap-6">
                             <div className="p-6 bg-card/30 backdrop-blur border border-white/5 rounded-2xl hover:border-primary/30 transition-colors">
                                 <Code className="w-8 h-8 text-secondary mb-4" />
-                                <h4 className="text-2xl font-bold">Full Stack</h4>
-                                <p className="text-sm text-muted-foreground mt-2">Engineering robust & scalable solutions.</p>
+                                <h4 className="text-2xl font-bold">1+ Years</h4>
+                                <p className="text-sm text-muted-foreground mt-2">Professional Experience</p>
                             </div>
                             <div className="p-6 bg-card/30 backdrop-blur border border-white/5 rounded-2xl hover:border-primary/30 transition-colors">
                                 <User className="w-8 h-8 text-primary mb-4" />
-                                <h4 className="text-2xl font-bold">CyberSec</h4>
-                                <p className="text-sm text-muted-foreground mt-2">Securing digital assets & infrastructure.</p>
+                                <h4 className="text-2xl font-bold">10+ Projects</h4>
+                                <p className="text-sm text-muted-foreground mt-2">Delivered & Deployed</p>
                             </div>
                         </div>
                     </motion.div>
