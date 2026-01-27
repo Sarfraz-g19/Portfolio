@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectToDatabase from "@/lib/db";
-import { Skill } from "@/models/Skill";
-import { Project } from "@/models/Project";
-import { Certificate } from "@/models/Certificate";
-import { Experience } from "@/models/Experience";
-import { Service } from "@/models/Service";
+import Skill from "@/models/Skill";
+import Project from "@/models/Project";
+import Certification from "@/models/Certification";
+import Experience from "@/models/Experience";
+// import Service from "@/models/Service";
 
 export async function GET(req: NextRequest) {
     try {
@@ -13,9 +13,9 @@ export async function GET(req: NextRequest) {
         // Clear existing data to ensure a clean slate
         await Skill.deleteMany({});
         await Project.deleteMany({});
-        await Certificate.deleteMany({});
+        await Certification.deleteMany({});
         await Experience.deleteMany({});
-        await Service.deleteMany({});
+        // await Service.deleteMany({});
 
         // Data
         const skills = [
@@ -122,8 +122,8 @@ export async function GET(req: NextRequest) {
         await Skill.insertMany(skills);
         await Project.insertMany(projects);
         await Experience.insertMany(experience);
-        await Certificate.insertMany(certificates);
-        await Service.insertMany(services);
+        await Certification.insertMany(certificates);
+        // await Service.insertMany(services);
 
         return NextResponse.json({
             success: true,
