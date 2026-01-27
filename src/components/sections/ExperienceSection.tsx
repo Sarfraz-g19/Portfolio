@@ -18,33 +18,34 @@ export default function ExperienceSection() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchExperience = async () => {
-            try {
-                const data = await fetchFromApi("/experience");
-                if (data && data.length > 0) setExperiences(data);
-                else throw new Error("No data");
-            } catch (error) {
-                setExperiences([
-                    {
-                        _id: "1",
-                        role: "Cyber Security Intern",
-                        companyName: "ANSH InfoTech",
-                        duration: "Jan 2025 - Present",
-                        description: ["Vulnerability Assessment", "Network Analysis", "Security Auditing"]
-                    },
-                    {
-                        _id: "2",
-                        role: "Web Developer",
-                        companyName: "Freelance",
-                        duration: "Aug 2024 - Feb 2025",
-                        description: ["MERN Stack Development", "SEO Optimization", "Client Management"]
-                    }
-                ]);
-            } finally {
-                setLoading(false);
+        // Resume Data from 'Mohammad_Sarfraj_Shah_IT_Resume_WITH_LIVE_PROJECTS.pdf'
+        const resumeData = [
+            {
+                _id: "1",
+                role: "Cyber Security & Cloud Computing Engineer",
+                companyName: "Freelance / Self-Employed",
+                duration: "Jul 2025 – Dec 2025",
+                description: [
+                    "Worked in Linux and Unix environments executing system administration and security commands.",
+                    "Hands-on experience with cyber security fundamentals and vulnerability assessment.",
+                    "Deployed and managed AWS EC2 instances.",
+                    "Worked with Docker, Jenkins, and CI/CD pipeline fundamentals."
+                ]
+            },
+            {
+                _id: "2",
+                role: "Web Developer",
+                companyName: "Freelance",
+                duration: "Aug 2024 – Feb 2025",
+                description: [
+                    "Developed and maintained large-scale live production websites with modern UI/UX.",
+                    "Implemented responsive interfaces using HTML5, CSS3, Bootstrap, and React.js.",
+                    "Worked with Java and Python for application logic and integrations."
+                ]
             }
-        };
-        fetchExperience();
+        ];
+        setExperiences(resumeData);
+        setLoading(false);
     }, []);
 
     if (loading) return null;

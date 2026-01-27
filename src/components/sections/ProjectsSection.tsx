@@ -35,38 +35,38 @@ export default function ProjectsSection() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchProjects = async () => {
-            try {
-                const data = await fetchFromApi("/projects");
-                if (data && data.length > 0) setProjects(data);
-                else throw new Error("No data");
-            } catch (error) {
-                setProjects([
-                    {
-                        _id: "1",
-                        title: "Secure Chat App",
-                        description: "End-to-end encrypted messaging application.",
-                        techStack: ["React", "Node.js", "Socket.io", "Encryption"],
-                        githubLink: "https://github.com/Sarfraz-g19",
-                        liveLink: "",
-                        projectImage: "https://images.unsplash.com/photo-1614064641938-3bcee529cfc4?w=800&q=80"
-                    },
-                    {
-                        _id: "2",
-                        title: "Vulnerability Scanner",
-                        description: "Automated network vulnerability assessment tool.",
-                        techStack: ["Python", "Nmap", "Automation"],
-                        githubLink: "https://github.com/Sarfraz-g19",
-                        liveLink: "",
-                        projectImage: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80"
-                    }
-                ]);
-            } finally {
-                setLoading(false);
+        // Resume Data from 'Mohammad_Sarfraj_Shah_IT_Resume_WITH_LIVE_PROJECTS.pdf'
+        const resumeProjects = [
+            {
+                _id: "p1",
+                title: "Anand Engineers",
+                description: "Corporate Website. Developed and maintained large-scale live production website.",
+                techStack: ["WordPress", "SEO"],
+                githubLink: "",
+                liveLink: "https://anandengineers.in/",
+                projectImage: "https://images.unsplash.com/photo-1581094794329-cd48ef4215f9?w=800&q=80"
+            },
+            {
+                _id: "p2",
+                title: "GGS Public School",
+                description: "Educational Website. Comprehensive platform for student information and academic resources.",
+                techStack: ["React", "Node.js", "Web Development"],
+                githubLink: "",
+                liveLink: "https://ggsps.co.in/",
+                projectImage: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&q=80"
+            },
+            {
+                _id: "p3",
+                title: "Jack's Pizza Cafe",
+                description: "Restaurant Website. Vibrant website featuring interactive menu and online ordering capabilities.",
+                techStack: ["Next.js", "React", "Frontend"],
+                githubLink: "",
+                liveLink: "https://jackspizzacafe.in/",
+                projectImage: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800&q=80"
             }
-        };
-
-        fetchProjects();
+        ];
+        setProjects(resumeProjects);
+        setLoading(false);
     }, []);
 
     if (loading) return null;

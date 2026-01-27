@@ -18,21 +18,15 @@ export default function CertificationsSection() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchCerts = async () => {
-            try {
-                const data = await fetchFromApi("/certifications");
-                if (data && data.length > 0) setCertifications(data);
-                else throw new Error("No data");
-            } catch (error) {
-                setCertifications([
-                    { _id: "1", title: "CompTIA Security+", issuer: "CompTIA", date: "2025", verified: true },
-                    { _id: "2", title: "AWS Cloud Practitioner", issuer: "AWS", date: "2024", verified: true }
-                ]);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchCerts();
+        // Resume Data from 'Mohammad_Sarfraj_Shah_IT_Resume_WITH_LIVE_PROJECTS.pdf'
+        const resumeCerts = [
+            { _id: "c1", title: "AWS Cloud Practitioner Essentials", issuer: "AWS Free Training", date: "2024", verified: true },
+            { _id: "c2", title: "AWS Technical Essentials", issuer: "AWS Free Certificate", date: "2024", verified: true },
+            { _id: "c3", title: "Web Developer Certification", issuer: "Braintrain Info Solutions", date: "2024", verified: true },
+            { _id: "c4", title: "Experience Letter & Internship Certificate", issuer: "ANSH InfoTech", date: "2024", verified: true }
+        ];
+        setCertifications(resumeCerts);
+        setLoading(false);
     }, []);
 
     if (loading) return null;

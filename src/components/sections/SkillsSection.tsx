@@ -15,28 +15,57 @@ export default function SkillsSection() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchSkills = async () => {
-            try {
-                const data = await fetchFromApi("/skills");
-                if (data && data.length > 0) setSkills(data);
-                else throw new Error("No data");
-            } catch (error) {
-                // Fallback Data if Fetch Fails
-                setSkills([
-                    { skillName: "Next.js", proficiencyLevel: "Advanced", category: "Frontend" },
-                    { skillName: "React", proficiencyLevel: "Advanced", category: "Frontend" },
-                    { skillName: "Tailwind CSS", proficiencyLevel: "Expert", category: "Frontend" },
-                    { skillName: "Node.js", proficiencyLevel: "Intermediate", category: "Backend" },
-                    { skillName: "MongoDB", proficiencyLevel: "Intermediate", category: "Backend" },
-                    { skillName: "Penetration Testing", proficiencyLevel: "Advanced", category: "Security" },
-                    { skillName: "Network Security", proficiencyLevel: "Advanced", category: "Security" },
-                    { skillName: "Python", proficiencyLevel: "Advanced", category: "Languages" }
-                ]);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchSkills();
+        // Resume Data from 'Mohammad_Sarfraj_Shah_IT_Resume_WITH_LIVE_PROJECTS.pdf' - EXACT MATCH
+        const resumeSkills = [
+            // Programming Languages
+            { skillName: "C", category: "Programming Languages", proficiencyLevel: "Intermediate" },
+            { skillName: "C++", category: "Programming Languages", proficiencyLevel: "Intermediate" },
+            { skillName: "Java", category: "Programming Languages", proficiencyLevel: "Advanced" },
+            { skillName: "Python", category: "Programming Languages", proficiencyLevel: "Advanced" },
+            { skillName: "JavaScript", category: "Programming Languages", proficiencyLevel: "Advanced" },
+            { skillName: "PHP", category: "Programming Languages", proficiencyLevel: "Intermediate" },
+            { skillName: "Bash", category: "Programming Languages", proficiencyLevel: "Intermediate" },
+            { skillName: "SQL", category: "Programming Languages", proficiencyLevel: "Intermediate" },
+
+            // Frontend
+            { skillName: "HTML5", category: "Frontend", proficiencyLevel: "Expert" },
+            { skillName: "CSS3", category: "Frontend", proficiencyLevel: "Expert" },
+            { skillName: "Bootstrap", category: "Frontend", proficiencyLevel: "Advanced" },
+            { skillName: "React.js", category: "Frontend", proficiencyLevel: "Advanced" },
+
+            // Cyber Security Tools
+            { skillName: "Burp Suite", category: "Cyber Security Tools", proficiencyLevel: "Advanced" },
+            { skillName: "Nmap", category: "Cyber Security Tools", proficiencyLevel: "Expert" },
+            { skillName: "Nessus", category: "Cyber Security Tools", proficiencyLevel: "Intermediate" },
+            { skillName: "Metasploit", category: "Cyber Security Tools", proficiencyLevel: "Intermediate" },
+            { skillName: "Nikto", category: "Cyber Security Tools", proficiencyLevel: "Intermediate" },
+            { skillName: "Wireshark", category: "Cyber Security Tools", proficiencyLevel: "Advanced" },
+            { skillName: "SQLmap", category: "Cyber Security Tools", proficiencyLevel: "Advanced" },
+            { skillName: "OWASP ZAP", category: "Cyber Security Tools", proficiencyLevel: "Intermediate" },
+            { skillName: "Hydra", category: "Cyber Security Tools", proficiencyLevel: "Intermediate" },
+            { skillName: "Netcat", category: "Cyber Security Tools", proficiencyLevel: "Intermediate" },
+
+            // Cloud & DevOps
+            { skillName: "AWS (EC2)", category: "Cloud & DevOps", proficiencyLevel: "Intermediate" },
+            { skillName: "Docker", category: "Cloud & DevOps", proficiencyLevel: "Intermediate" },
+            { skillName: "Jenkins", category: "Cloud & DevOps", proficiencyLevel: "Intermediate" },
+            { skillName: "Git/GitHub", category: "Cloud & DevOps", proficiencyLevel: "Advanced" },
+            { skillName: "CI/CD", category: "Cloud & DevOps", proficiencyLevel: "Intermediate" },
+
+            // Development Tools (New Category)
+            { skillName: "VS Code", category: "Development Tools", proficiencyLevel: "Advanced" },
+            { skillName: "IntelliJ", category: "Development Tools", proficiencyLevel: "IDEs" },
+            { skillName: "PyCharm", category: "Development Tools", proficiencyLevel: "IDEs" },
+            { skillName: "Android Studio", category: "Development Tools", proficiencyLevel: "IDEs" },
+            { skillName: "MySQL", category: "Development Tools", proficiencyLevel: "Database" },
+            { skillName: "XAMPP", category: "Development Tools", proficiencyLevel: "Tools" },
+
+            // Operating Systems (New Category)
+            { skillName: "Windows", category: "Operating Systems", proficiencyLevel: "Advanced" },
+            { skillName: "Linux", category: "Operating Systems", proficiencyLevel: "Expert" }
+        ];
+        setSkills(resumeSkills);
+        setLoading(false);
     }, []);
 
     // Group skills by category
