@@ -16,9 +16,12 @@ export default function AboutSection() {
         const fetchProfile = async () => {
             try {
                 const data = await fetchFromApi("/profile");
-                setProfile(data);
+                if (data) setProfile(data);
+                else throw new Error("No data");
             } catch (error) {
-                console.error("Failed to fetch profile", error);
+                setProfile({
+                    bio: "I am a dedicated Full Stack Developer and Cybersecurity enthusiast who recently completed an intensive internship at ANSH InfoTech. I specialize in the MERN stack and have a strong foundation in network security and penetration testing. Currently looking for entry-level opportunities where I can apply my skills in securing the digital landscape while building high-performance web solutions."
+                });
             }
         };
         fetchProfile();

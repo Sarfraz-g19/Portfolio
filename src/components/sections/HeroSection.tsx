@@ -24,9 +24,18 @@ export default function HeroSection() {
         const fetchProfile = async () => {
             try {
                 const data = await fetchFromApi("/profile");
-                setProfile(data);
+                if (data) setProfile(data);
+                else throw new Error("No data");
             } catch (error) {
-                console.error("Failed to fetch profile", error);
+                console.warn("Using fallback profile data");
+                setProfile({
+                    name: "Sarfraj Shah",
+                    title: "Full Stack Developer & Cyber Security Analyst",
+                    subtitle: "Crafting secure, scalable digital experiences.",
+                    bio: "",
+                    avatar: "https://github.com/Sarfraz-g19.png",
+                    availableForHire: true
+                });
             } finally {
                 setLoading(false);
             }
