@@ -18,9 +18,20 @@ export default function SkillsSection() {
         const fetchSkills = async () => {
             try {
                 const data = await fetchFromApi("/skills");
-                setSkills(data || []);
+                if (data && data.length > 0) setSkills(data);
+                else throw new Error("No data");
             } catch (error) {
-                console.error("Failed to fetch skills", error);
+                // Fallback Data if Fetch Fails
+                setSkills([
+                    { skillName: "Next.js", proficiencyLevel: "Advanced", category: "Frontend" },
+                    { skillName: "React", proficiencyLevel: "Advanced", category: "Frontend" },
+                    { skillName: "Tailwind CSS", proficiencyLevel: "Expert", category: "Frontend" },
+                    { skillName: "Node.js", proficiencyLevel: "Intermediate", category: "Backend" },
+                    { skillName: "MongoDB", proficiencyLevel: "Intermediate", category: "Backend" },
+                    { skillName: "Penetration Testing", proficiencyLevel: "Advanced", category: "Security" },
+                    { skillName: "Network Security", proficiencyLevel: "Advanced", category: "Security" },
+                    { skillName: "Python", proficiencyLevel: "Advanced", category: "Languages" }
+                ]);
             } finally {
                 setLoading(false);
             }

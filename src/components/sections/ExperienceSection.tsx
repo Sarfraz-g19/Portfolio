@@ -21,9 +21,25 @@ export default function ExperienceSection() {
         const fetchExperience = async () => {
             try {
                 const data = await fetchFromApi("/experience");
-                setExperiences(data || []);
+                if (data && data.length > 0) setExperiences(data);
+                else throw new Error("No data");
             } catch (error) {
-                console.error("Failed to fetch experience", error);
+                setExperiences([
+                    {
+                        _id: "1",
+                        role: "Cyber Security Intern",
+                        companyName: "ANSH InfoTech",
+                        duration: "Jan 2025 - Present",
+                        description: ["Vulnerability Assessment", "Network Analysis", "Security Auditing"]
+                    },
+                    {
+                        _id: "2",
+                        role: "Web Developer",
+                        companyName: "Freelance",
+                        duration: "Aug 2024 - Feb 2025",
+                        description: ["MERN Stack Development", "SEO Optimization", "Client Management"]
+                    }
+                ]);
             } finally {
                 setLoading(false);
             }

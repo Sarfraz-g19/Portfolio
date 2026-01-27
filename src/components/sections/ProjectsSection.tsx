@@ -38,9 +38,29 @@ export default function ProjectsSection() {
         const fetchProjects = async () => {
             try {
                 const data = await fetchFromApi("/projects");
-                setProjects(data || []);
+                if (data && data.length > 0) setProjects(data);
+                else throw new Error("No data");
             } catch (error) {
-                console.error("Failed to fetch projects", error);
+                setProjects([
+                    {
+                        _id: "1",
+                        title: "Secure Chat App",
+                        description: "End-to-end encrypted messaging application.",
+                        techStack: ["React", "Node.js", "Socket.io", "Encryption"],
+                        githubLink: "https://github.com/Sarfraz-g19",
+                        liveLink: "",
+                        projectImage: "https://images.unsplash.com/photo-1614064641938-3bcee529cfc4?w=800&q=80"
+                    },
+                    {
+                        _id: "2",
+                        title: "Vulnerability Scanner",
+                        description: "Automated network vulnerability assessment tool.",
+                        techStack: ["Python", "Nmap", "Automation"],
+                        githubLink: "https://github.com/Sarfraz-g19",
+                        liveLink: "",
+                        projectImage: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80"
+                    }
+                ]);
             } finally {
                 setLoading(false);
             }
