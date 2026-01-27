@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { Shield, Menu, X, Lock } from "lucide-react";
+import { Shield, Menu, X, Lock, Linkedin, Send } from "lucide-react";
 
 const navItems = [
     { name: "Home", href: "#home" },
@@ -88,13 +88,31 @@ export default function Navbar() {
                         </div>
 
                         {/* Right Actions */}
-                        <div className="flex items-center gap-4 z-50">
+                        <div className="flex items-center gap-3 z-50">
+                            <a
+                                href="https://www.linkedin.com/in/sarfrajshah-cybersecurity/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="p-2 rounded-full text-muted-foreground hover:text-[#0077b5] hover:bg-[#0077b5]/10 transition-all"
+                                title="LinkedIn"
+                            >
+                                <Linkedin size={18} />
+                            </a>
+                            <a
+                                href="https://t.me/Sarfraz0167"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="p-2 rounded-full text-muted-foreground hover:text-[#229ED9] hover:bg-[#229ED9]/10 transition-all"
+                                title="Telegram"
+                            >
+                                <Send size={18} />
+                            </a>
                             <Link
                                 href="/admin"
                                 className="p-2 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"
                                 title="Admin Access"
                             >
-                                <Lock size={20} />
+                                <Lock size={18} />
                             </Link>
 
                             {/* Mobile Menu Button */}

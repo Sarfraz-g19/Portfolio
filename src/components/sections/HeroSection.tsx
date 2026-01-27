@@ -77,27 +77,42 @@ export default function HeroSection() {
                     </h1>
 
                     <h2 className="text-xl md:text-2xl text-primary font-mono font-medium max-w-lg">
-                        {profile?.title || "Full Stack Developer"}
+                        Cyber Security Intern | Full-Stack Developer | MERN & Next.js
                     </h2>
 
                     <p className="text-muted-foreground text-sm sm:text-base md:text-lg max-w-md leading-relaxed font-light">
-                        {profile?.subtitle}
+                        Specializing in secure admin dashboards, scalable systems, and real-world web applications. Bridging the gap between robust backend architecture and dynamic frontend experiences.
                     </p>
 
-                    <div className="flex flex-col sm:flex-row gap-6 w-full sm:w-auto pt-6">
-                        <Link href="#projects" className="relative group px-8 py-4 bg-primary text-background font-bold uppercase tracking-widest text-xs overflow-hidden transition-all duration-300 hover:shadow-[0_0_30px_var(--color-primary)]">
-                            <span className="relative z-10 flex items-center gap-2">
-                                VIEW OPERATIONS <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-                            </span>
-                        </Link>
+                    <div className="flex flex-wrap justify-center lg:justify-start gap-4 pt-6 w-full">
                         <a
-                            href="/Mohammad_Sarfraj_Shah_Resume.pdf"
+                            href="https://github.com/Sarfraz-g19"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="relative group px-8 py-4 border border-foreground/20 text-foreground font-bold uppercase tracking-widest text-xs transition-all duration-300 hover:border-primary hover:text-primary"
+                            className="relative group px-6 py-3 bg-primary text-background font-bold uppercase tracking-widest text-xs overflow-hidden transition-all duration-300 hover:shadow-[0_0_30px_var(--color-primary)] rounded-sm"
                         >
                             <span className="relative z-10 flex items-center gap-2">
-                                <Download size={14} /> VIEW RESUME
+                                <Github size={16} /> GITHUB
+                            </span>
+                        </a>
+                        <a
+                            href="https://www.linkedin.com/in/sarfrajshah-cybersecurity/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="relative group px-6 py-3 border border-foreground/20 text-foreground font-bold uppercase tracking-widest text-xs transition-all duration-300 hover:border-[#0077b5] hover:text-[#0077b5] rounded-sm"
+                        >
+                            <span className="relative z-10 flex items-center gap-2">
+                                <Linkedin size={16} /> LINKEDIN
+                            </span>
+                        </a>
+                        <a
+                            href="https://t.me/Sarfraz0167"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="relative group px-6 py-3 border border-foreground/20 text-foreground font-bold uppercase tracking-widest text-xs transition-all duration-300 hover:border-[#229ED9] hover:text-[#229ED9] rounded-sm"
+                        >
+                            <span className="relative z-10 flex items-center gap-2">
+                                <Mail size={16} /> TELEGRAM
                             </span>
                         </a>
                     </div>
