@@ -38,6 +38,15 @@ export default function ProjectsSection() {
         // Resume Data from 'Mohammad_Sarfraj_Shah_IT_Resume_WITH_LIVE_PROJECTS.pdf'
         const resumeProjects = [
             {
+                _id: "p0",
+                title: "Personal Portfolio",
+                description: "My official developer portfolio. High-performance, animated, and fully responsive.",
+                techStack: ["Next.js", "React", "Framer Motion"],
+                githubLink: "https://github.com/Sarfraz-g19/Portfolio",
+                liveLink: "https://portfolio-iqwf-git-main-portfoios-projects.vercel.app/",
+                projectImage: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80"
+            },
+            {
                 _id: "p1",
                 title: "Anand Engineers",
                 description: "Corporate Website. Developed and maintained large-scale live production website.",
