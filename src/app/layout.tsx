@@ -56,7 +56,7 @@ export default function RootLayout({
               <CustomCursor />
               <RightNavbar />
               <Navbar />
-              <main className="flex-grow pt-24 w-full z-10 text-foreground">
+              <main className="flex-grow pt-20 md:pt-24 w-full z-10 text-foreground">
                 {children}
               </main>
               <Footer />

@@ -19,6 +19,7 @@ interface Profile {
 export default function HeroSection() {
     const [profile, setProfile] = useState<Profile | null>(null);
     const [loading, setLoading] = useState(true);
+    const [isColored, setIsColored] = useState(false);
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -136,7 +137,10 @@ export default function HeroSection() {
                             <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-primary z-20"></div>
                             <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-secondary z-20"></div>
 
-                            <div className="w-full h-full rounded-2xl overflow-hidden grayscale hover:grayscale-0 transition-all duration-1000 bg-black">
+                            <div
+                                className={`w-full h-full rounded-2xl overflow-hidden transition-all duration-1000 bg-black cursor-pointer ${isColored ? "grayscale-0" : "grayscale hover:grayscale-0"}`}
+                                onClick={() => setIsColored(!isColored)}
+                            >
                                 <img
                                     src={profile?.avatar || "https://github.com/Sarfraz-g19.png"}
                                     alt={profile?.name || "Profile"}

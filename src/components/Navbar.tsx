@@ -45,13 +45,15 @@ export default function Navbar() {
             <motion.nav
                 initial={{ y: -100 }}
                 animate={{ y: 0 }}
-                className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "py-4 top-2 bg-transparent" : "py-6 top-0 bg-transparent"
+                className={`fixed left-0 right-0 z-50 transition-all duration-300 ${scrolled
+                    ? "py-2 md:py-4 top-0 md:top-2 bg-transparent"
+                    : "py-4 md:py-6 top-0 bg-transparent"
                     }`}
             >
-                <div className={`max-w-7xl mx-auto px-6 transition-all duration-300`}>
-                    <div className={`flex items-center justify-between h-16 rounded-full px-6 ${scrolled
+                <div className={`max-w-7xl mx-auto px-4 md:px-6 transition-all duration-300`}>
+                    <div className={`flex items-center justify-between h-14 md:h-16 rounded-full px-4 md:px-6 ${scrolled
                         ? "bg-background/80 backdrop-blur-md border border-white/10 shadow-lg"
-                        : ""
+                        : "bg-background/20 backdrop-blur-sm border border-white/5"
                         }`}>
 
                         {/* Logo */}

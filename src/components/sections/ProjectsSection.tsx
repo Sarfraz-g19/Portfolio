@@ -44,7 +44,7 @@ export default function ProjectsSection() {
                 techStack: ["Next.js", "React", "Framer Motion"],
                 githubLink: "https://github.com/Sarfraz-g19/Portfolio",
                 liveLink: "https://portfolio-iqwf-git-main-portfoios-projects.vercel.app/",
-                projectImage: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80"
+                projectImage: "/projects/portfolio.png"
             },
             {
                 _id: "p1",
@@ -53,7 +53,7 @@ export default function ProjectsSection() {
                 techStack: ["WordPress", "SEO"],
                 githubLink: "",
                 liveLink: "https://anandengineers.in/",
-                projectImage: "https://images.unsplash.com/photo-1581094794329-cd48ef4215f9?w=800&q=80"
+                projectImage: "/projects/anand.png"
             },
             {
                 _id: "p2",
@@ -62,7 +62,7 @@ export default function ProjectsSection() {
                 techStack: ["React", "Node.js", "Web Development"],
                 githubLink: "",
                 liveLink: "https://ggsps.co.in/",
-                projectImage: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&q=80"
+                projectImage: "/projects/ggs.png"
             },
             {
                 _id: "p3",
@@ -71,7 +71,7 @@ export default function ProjectsSection() {
                 techStack: ["Next.js", "React", "Frontend"],
                 githubLink: "",
                 liveLink: "https://jackspizzacafe.in/",
-                projectImage: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800&q=80"
+                projectImage: "/projects/pizza.png"
             }
         ];
         setProjects(resumeProjects);
