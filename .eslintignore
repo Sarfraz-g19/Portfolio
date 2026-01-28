@@ -1,0 +1,8 @@
+*
+!src/
+!public/
+!next.config.ts
+!postcss.config.mjs
+!eslint.config.mjs
+!package.json
+!tsconfig.json
