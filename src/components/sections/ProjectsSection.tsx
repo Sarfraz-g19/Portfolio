@@ -43,7 +43,7 @@ export default function ProjectsSection() {
                 description: "My official developer portfolio. High-performance, animated, and fully responsive.",
                 techStack: ["Next.js", "React", "Framer Motion"],
                 githubLink: "https://github.com/Sarfraz-g19/Portfolio",
-                liveLink: "https://portfolio-iqwf-git-main-portfoios-projects.vercel.app/",
+                liveLink: "https://portfolio-iqwf.vercel.app/",
                 projectImage: "/projects/portfolio.png"
             },
             {
