@@ -120,6 +120,7 @@ export default function Navbar() {
                             </a>
                             <Link
                                 href="/admin"
+                                prefetch={false}
                                 className="p-2 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"
                                 title="Admin Access"
                             >
@@ -160,6 +161,7 @@ export default function Navbar() {
                         <div className="w-12 h-px bg-border my-2" />
                         <Link
                             href="/admin"
+                            prefetch={false}
                             onClick={() => setMobileMenuOpen(false)}
                             className="flex items-center gap-2 text-lg font-medium text-muted-foreground hover:text-primary"
                         >

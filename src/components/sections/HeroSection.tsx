@@ -25,7 +25,8 @@ export default function HeroSection() {
         const fetchProfile = async () => {
             try {
                 const data = await fetchFromApi("/profile");
-                if (data) setProfile(data);
+                if (data && !Array.isArray(data) && (data.name || data.bio)) setProfile(data);
+                else if (Array.isArray(data) && data.length > 0 && (data[0].name || data[0].bio)) setProfile(data[0]);
                 else throw new Error("No data");
             } catch (error) {
                 console.warn("Using fallback profile data");
